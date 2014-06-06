@@ -25,10 +25,7 @@ public class Unfollower {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		String consumerKey = "JpDhnrX8qKR60erSwKAN6Q";
-		String consumerSecret = "tesyZIHfatgtEy8eo2YouwJXfAgD8unOaP1yojZcTwc";
-		String accessToken = "416100289-9aIlh6ZpXE4v0oX6lhX6Pl38A8Kvuus1HoJb9PtC";
-		String accessTokenSecret = "NSb92QJRojy7qT9PYGfFrh15RPYUrMHuf6ok7OKDaB7Xe";
+
 		try{
 			twitter4j.conf.ConfigurationBuilder cb = new ConfigurationBuilder();
 			cb.setDebugEnabled(true);
