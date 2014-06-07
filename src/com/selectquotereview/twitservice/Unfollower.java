@@ -17,7 +17,7 @@ public class Unfollower {
 	 * 
 	 */
 	
-	private static String fileLoc="c:\\ids.txt";
+	private static String fileLoc="c:\\ids.txt"; //$NON-NLS-1$
 	public static void main(String[] args){
 		BufferedReader idFile=null;
 		try{
@@ -25,7 +25,10 @@ public class Unfollower {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-
+		String consumerKey =    	OAuthConst.getString("Unfollower.consumerKey"); //$NON-NLS-1$
+		String consumerSecret = 	OAuthConst.getString("Unfollower.consumerSecret"); //$NON-NLS-1$
+		String accessToken =    	OAuthConst.getString("Unfollower.accessToken"); //$NON-NLS-1$
+		String accessTokenSecret =  OAuthConst.getString("Unfollower.accessTokenSecret"); //$NON-NLS-1$
 		try{
 			twitter4j.conf.ConfigurationBuilder cb = new ConfigurationBuilder();
 			cb.setDebugEnabled(true);
@@ -34,38 +37,35 @@ public class Unfollower {
 			cb.setOAuthAccessToken(accessToken);
 			cb.setOAuthAccessTokenSecret(accessTokenSecret);;
 			cb.setDebugEnabled(true);
+						
+			TwitterFactory twitterFactory = new TwitterFactory(cb.build());
+			Twitter twitter = twitterFactory.getInstance();
+			AccessToken rt=twitter.getOAuthAccessToken();
+			long id=twitter.getId();
 			
-		TwitterFactory twitterFactory = new TwitterFactory(cb.build());
-		Twitter twitter = twitterFactory.getInstance();
-AccessToken rt=twitter.getOAuthAccessToken();
-		
-		
-
-		//			      twitterRequestToken.getAuthenticationURL());
-		long id=twitter.getId();
-		
-		long line=Long.parseLong(idFile.readLine());
-		Random gen=new Random();
-        while(line!=-1){
-        	System.out.println(line);
-        	Relationship rel=twitter.showFriendship(id, line);
-        	if(rel.isTargetFollowedBySource()){
-        	User resp=twitter.destroyFriendship(line);
-        	
-        	System.out.println(resp.getName());
-        	}
-        	/* To reduce load on Twitter, changed to comply to Twitter unfollow automation rules
-        	 * a la TweetAdder
-        	synchronized(Unfollower.class){
-        	Unfollower.class.wait((long)(14+gen.nextInt(32))*1000l);
-        	}*/
-        	try {
-                System.in.read();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        	line=Long.parseLong(idFile.readLine());
+			long line=Long.parseLong(idFile.readLine());
+			Random gen=new Random();
+	        while(line!=-1){
+	        	System.out.println(line);
+	        	Relationship rel=twitter.showFriendship(id, line);
+	        	if(rel.isTargetFollowedBySource()){
+	        	User resp=twitter.destroyFriendship(line);
+	        	
+	        	System.out.println(resp.getName());
+	        	}
+	        	/* Wait to reduce load on Twitter. 
+	        	 * Changed to comply to Twitter unfollow automation rules
+	        	 * a la TweetAdder 4
+	        	synchronized(Unfollower.class){
+	        	Unfollower.class.wait((long)(14+gen.nextInt(32))*1000l);
+	        	}*/
+	        	try {
+	                System.in.read();
+	            } catch (IOException e) {
+	                // TODO Auto-generated catch block
+	                e.printStackTrace();
+	            }
+	        	line=Long.parseLong(idFile.readLine());
         }
 		}catch(Exception e){
 			e.printStackTrace();
